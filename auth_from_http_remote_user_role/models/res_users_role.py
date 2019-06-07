@@ -27,14 +27,3 @@ class ResUsersRole(models.Model):
             env['res.users.role.line'].search([
                 ('user_id', '=', user.id),
                 ('role_id', 'in', roles2remove)]).unlink()
-
-
-class ResUsersRoleLine(models.Model):
-    _inherit = 'res.users.role.line'
-
-    @api.multi
-    def unlink(self):
-        users = self.mapped('user_id')
-        res = super(ResUsersRoleLine, self).unlink()
-        users.reset_last_http_header_roles()
-        return res
