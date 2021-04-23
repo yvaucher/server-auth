@@ -13,4 +13,7 @@ class AuthSamlRequest(models.TransientModel):
         string="SAML Provider that issued the token",
         required=True,
     )
-    saml_request_id = fields.Char("Current Request ID", required=True,)
+    saml_request_id = fields.Char(
+        "Current Request ID",
+        required=True,
+    )
