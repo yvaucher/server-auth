@@ -46,9 +46,12 @@ class AuthSamlProvider(models.Model):
         detecting from request or system parameter web.base.url
         """,
     )
-    sp_pem = fields.Binary(
-        string="Odoo Certificate",
-        help="Combined certificate and private key used by Odoo to sign",
+    sp_pem_public = fields.Binary(
+        string="Odoo Public Certificate",
+        attachment=True,
+    )
+    sp_pem_private = fields.Binary(
+        string="Odoo Public Certificate",
         attachment=True,
     )
     sp_metadata_url = fields.Char(
@@ -118,14 +121,14 @@ class AuthSamlProvider(models.Model):
                 base_url, ("/auth_saml/metadata?%s" % (qs))
             )
 
-    def _get_cert_key_path(self):
+    def _get_cert_key_path(self, field="sp_pem_public"):
         self.ensure_one()
 
         model_attachment = self.env["ir.attachment"].sudo()
         keys = model_attachment.search(
             [
                 ("res_model", "=", self._name),
-                ("res_field", "=", "sp_pem"),
+                ("res_field", "=", field),
                 ("res_id", "=", self.id),
             ],
             limit=1,
@@ -158,7 +161,6 @@ class AuthSamlProvider(models.Model):
             )
 
         acs_url = urllib.parse.urljoin(base_url, "/auth_saml/signin")
-        keys_path = self._get_cert_key_path()
         settings = {
             "metadata": {"inline": [self.idp_metadata]},
             "entityid": self.entity_id,
@@ -179,8 +181,8 @@ class AuthSamlProvider(models.Model):
                     "want_response_signed": True,
                 },
             },
-            "cert_file": keys_path,
-            "key_file": keys_path,
+            "cert_file": self._get_cert_key_path("sp_pem_public"),
+            "key_file": self._get_cert_key_path("sp_pem_private"),
         }
         spConfig = Saml2Config()
         spConfig.load(settings)
@@ -287,14 +289,13 @@ class AuthSamlProvider(models.Model):
     def _metadata_string(self, valid=None, base_url=None):
         self.ensure_one()
 
-        keys_path = self._get_cert_key_path()
         sp_config = self._get_config_for_provider(base_url)
         return saml2.metadata.create_metadata_string(
             None,
             config=sp_config,
             valid=valid,
-            cert=keys_path,
-            keyfile=keys_path,
+            cert=self._get_cert_key_path("sp_pem_public"),
+            keyfile=self._get_cert_key_path("sp_pem_private"),
             sign=True,
         )
 

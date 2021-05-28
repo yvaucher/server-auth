@@ -94,12 +94,19 @@
                                     class="help small"
                                 >Entity Identifier sent to the IDP. Often this would be the metadata URL, but it can be any string.</p>
                             </div>
-                            <label for="sp_pem" />
+                            <label for="sp_pem_public" />
                             <div>
-                                <field name="sp_pem" />
+                                <field name="sp_pem_public" />
                                 <p
                                     class="help small"
-                                >Used to sign requests sent to the IDP. You can use openssl to generate a certificate.</p>
+                                >Used to sign requests sent to the IDP. You can use openssl to generate a certificate and key.</p>
+                            </div>
+                            <label for="sp_pem_private" />
+                            <div>
+                                <field name="sp_pem_private" />
+                                <p
+                                    class="help small"
+                                >Used to sign requests sent to the IDP. You can use openssl to generate a certificate and key.</p>
                             </div>
                             <label for="sig_alg" />
                             <div>
