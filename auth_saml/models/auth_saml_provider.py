@@ -51,7 +51,7 @@ class AuthSamlProvider(models.Model):
         attachment=True,
     )
     sp_pem_private = fields.Binary(
-        string="Odoo Public Certificate",
+        string="Odoo Private Key",
         attachment=True,
     )
     sp_metadata_url = fields.Char(

@@ -54,7 +54,10 @@ def fragment_to_query_string(func):
 
 class SAMLLogin(Home):
     def _list_saml_providers_domain(self):
-        return [("sp_pem", "!=", False)]
+        return [
+            ("sp_pem_public", "!=", False),
+            ("sp_pem_private", "!=", False),
+        ]
 
     def list_providers(self):
         providers = (
