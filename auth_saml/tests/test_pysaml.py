@@ -12,17 +12,27 @@ class TestPySaml(HttpCase):
     def setUp(self):
         super().setUp()
 
-        sp_pem = None
+        sp_pem_public = None
+        sp_pem_private = None
 
-        sp_pem_path = os.path.join(os.path.dirname(__file__), "data", "sp.pem")
-        with open(sp_pem_path, "r") as f:
-            sp_pem = f.read()
+        with open(
+            os.path.join(os.path.dirname(__file__), "data", "sp.pem"),
+            "r"
+        ) as f:
+            sp_pem_public = f.read()
+
+        with open(
+            os.path.join(os.path.dirname(__file__), "data", "sp.key"),
+            "r"
+        ) as f:
+            sp_pem_private = f.read()
 
         self.saml_provider = self.env["auth.saml.provider"].create(
             {
                 "name": "SAML Provider Demo",
                 "idp_metadata": FakeIDP().get_metadata(),
-                "sp_pem": base64.b64encode(sp_pem.encode()),
+                "sp_pem_public": base64.b64encode(sp_pem_public.encode()),
+                "sp_pem_private": base64.b64encode(sp_pem_private.encode()),
                 "body": "Login with Authentic",
                 "active": True,
                 "sig_alg": "SIG_RSA_SHA1",
