@@ -15,16 +15,10 @@ class TestPySaml(HttpCase):
         sp_pem_public = None
         sp_pem_private = None
 
-        with open(
-            os.path.join(os.path.dirname(__file__), "data", "sp.pem"),
-            "r"
-        ) as f:
+        with open(os.path.join(os.path.dirname(__file__), "data", "sp.pem"), "r") as f:
             sp_pem_public = f.read()
 
-        with open(
-            os.path.join(os.path.dirname(__file__), "data", "sp.key"),
-            "r"
-        ) as f:
+        with open(os.path.join(os.path.dirname(__file__), "data", "sp.key"), "r") as f:
             sp_pem_private = f.read()
 
         self.saml_provider = self.env["auth.saml.provider"].create(
