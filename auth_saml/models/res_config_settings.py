@@ -8,8 +8,6 @@ class ResConfigSettings(models.TransientModel):
     _inherit = "res.config.settings"
 
     allow_saml_uid_and_internal_password = fields.Boolean(
-        config_parameter="auth_saml.allow_saml.uid_and_internal_password",
-        string="Allow SAML users to posess an Odoo password "
-        "(warning: decreases security)",
-        default=True,
+        "Allow SAML users to posess an Odoo password (warning: decreases security)",
+        config_parameter="auth_saml.allow_saml_uid_and_internal_password",
     )
