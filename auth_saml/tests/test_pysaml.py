@@ -45,6 +45,27 @@ class TestPySaml(HttpCase):
         self.assertIn("Login with Authentic", response.text)
         self.assertIn(self.url_saml_request, response.text)
 
+    def test_ensure_metadata_present(self):
+        response = self.url_open(
+            "/auth_saml/metadata?p=%d&d=%s"
+            % (self.saml_provider.id, self.env.cr.dbname)
+        )
+
+        self.assertTrue(response.ok)
+        self.assertTrue("xml" in response.headers.get("Content-Type"))
+
+    def test_ensure_get_auth_request_redirects(self):
+        response = self.url_open(
+            "/auth_saml/get_auth_request?pid=%d" % (self.saml_provider.id),
+            allow_redirects=False,
+        )
+        self.assertTrue(response.ok)
+        self.assertEqual(response.status_code, 303)
+        self.assertIn(
+            "http://localhost:8000/sso/redirect?SAMLRequest=",
+            response.headers.get("Location"),
+        )
+
     def test_login_no_saml(self):
         """
         Login with a user account, but without any SAML provider setup
