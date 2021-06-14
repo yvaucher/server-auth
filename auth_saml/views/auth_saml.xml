@@ -115,6 +115,7 @@
                                 Algorithm used to sign requests.
                                 </p>
                             </div>
+                            <field name="sign" />
                             <label for="attribute_mapping_ids" />
                             <div>
                                 <field

@@ -90,6 +90,7 @@ class AuthSamlProvider(models.Model):
         required=True,
         string="Signature Algorithm",
     )
+    sign = fields.Boolean(default=True, help="Whether requests should be signed or not")
 
     @api.model
     def _sig_alg_selection(self):
@@ -175,10 +176,10 @@ class AuthSamlProvider(models.Model):
                         ],
                     },
                     "allow_unsolicited": False,
-                    "authn_requests_signed": True,
-                    "logout_requests_signed": True,
-                    "want_assertions_signed": True,
-                    "want_response_signed": True,
+                    "authn_requests_signed": self.sign,
+                    "logout_requests_signed": self.sign,
+                    "want_assertions_signed": self.sign,
+                    "want_response_signed": self.sign,
                 },
             },
             "cert_file": self._get_cert_key_path("sp_pem_public"),
@@ -214,7 +215,7 @@ class AuthSamlProvider(models.Model):
 
         saml_client = self._get_client_for_provider(url_root)
         reqid, info = saml_client.prepare_for_authenticate(
-            sign=True, relay_state=json.dumps(state), sigalg=sig_alg
+            sign=self.sign, relay_state=json.dumps(state), sigalg=sig_alg
         )
 
         redirect_url = None
@@ -296,7 +297,7 @@ class AuthSamlProvider(models.Model):
             valid=valid,
             cert=self._get_cert_key_path("sp_pem_public"),
             keyfile=self._get_cert_key_path("sp_pem_private"),
-            sign=True,
+            sign=self.sign,
         )
 
     def _hook_validate_auth_response(self, response, matching_value):
